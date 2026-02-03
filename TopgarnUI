@@ -1,0 +1,192 @@
+local TweenService = game:GetService("TweenService")
+local Player = game.Players.LocalPlayer
+
+--// GUI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TopBarMenuExxHubGLBL"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+screenGui.DisplayOrder = 1000000
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = Player:WaitForChild("PlayerGui")
+
+--// Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 44, 0, 44)
+toggleButton.Position = UDim2.new(0.5, -22, 0, 12)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.BackgroundTransparency = 0.2
+toggleButton.AutoButtonColor = false
+toggleButton.Text = ""
+toggleButton.ZIndex = 9999
+toggleButton.Parent = screenGui
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(1, 0)
+toggleCorner.Parent = toggleButton
+
+local rotFrame = Instance.new("Frame")
+rotFrame.Size = UDim2.new(1,0,1,0)
+rotFrame.BackgroundTransparency = 1
+rotFrame.ZIndex = 9999
+rotFrame.Parent = toggleButton
+
+local menuLabel = Instance.new("TextLabel")
+menuLabel.Size = UDim2.new(1,0,1,0)
+menuLabel.BackgroundTransparency = 1
+menuLabel.Text = "≡"
+menuLabel.Font = Enum.Font.GothamBold
+menuLabel.TextSize = 28
+menuLabel.TextColor3 = Color3.new(1,1,1)
+menuLabel.ZIndex = 9999
+menuLabel.Parent = rotFrame
+
+local closeLabel = Instance.new("TextLabel")
+closeLabel.Size = UDim2.new(1,0,1,0)
+closeLabel.BackgroundTransparency = 1
+closeLabel.Text = "X"
+closeLabel.Font = Enum.Font.GothamBold
+closeLabel.TextSize = 28
+closeLabel.TextColor3 = Color3.new(1,1,1)
+closeLabel.TextTransparency = 1
+closeLabel.ZIndex = 9999
+closeLabel.Parent = rotFrame
+
+--// Popup Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 0, 0, 0) 
+mainFrame.Position = UDim2.new(0.5, 0, 0, 65)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.Visible = false
+mainFrame.ClipsDescendants = true
+mainFrame.ZIndex = 9998
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
+
+--// Scrolling Menu (Horizontal)
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1, -10, 1, -10)
+scroll.Position = UDim2.new(0, 5, 0, 5)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollingDirection = Enum.ScrollingDirection.X 
+scroll.ScrollBarThickness = 2
+scroll.BackgroundTransparency = 1
+scroll.ZIndex = 9998
+scroll.Parent = mainFrame
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.Parent = scroll
+listLayout.FillDirection = Enum.FillDirection.Horizontal
+listLayout.Padding = UDim.new(0, 10)
+listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+--// Menu Items
+local menuItems = {
+    {Text="Executor", Icon="rbxassetid://6031075938"},
+    {Text="Script Blox", Icon="rbxassetid://91251007612635"},
+    {Text="Script", Icon="rbxassetid://112780490255100"},
+    {Text="Save Script", Icon="rbxassetid://112238336567509"},
+    {Text="Goto Players", Icon="rbxassetid://80278360213440"},
+    {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
+    {Text="Info Server", Icon="rbxassetid://119828878228867"},
+    {Text="ESP Players", Icon="rbxassetid://6031075931"},
+}
+
+local opened = false
+local animating = false
+
+local function toggleMenu(state)
+    if animating then return end
+    animating = true
+    opened = state
+
+    TweenService:Create(rotFrame, TweenInfo.new(0.25), {Rotation = opened and 180 or 0}):Play()
+    if opened then
+        TweenService:Create(menuLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
+        task.wait(0.1)
+        TweenService:Create(closeLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+    else
+        TweenService:Create(closeLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
+        task.wait(0.1)
+        TweenService:Create(menuLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+    end
+
+    if opened then
+        mainFrame.Visible = true
+        local tween1 = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)})
+        tween1:Play()
+        tween1.Completed:Wait()
+        TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 60)}):Play()
+    else
+        local tweenClose = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+        tweenClose:Play()
+        tweenClose.Completed:Wait()
+        mainFrame.Visible = false
+    end
+
+    animating = false
+end
+
+toggleButton.MouseButton1Click:Connect(function()
+    toggleMenu(not opened)
+end)
+
+local validUI = {}
+for _, item in ipairs(menuItems) do
+    validUI[item.Text.."UI"] = true
+end
+
+-- Tombol Menu
+for i, item in ipairs(menuItems) do
+    local btn = Instance.new("ImageButton")
+    btn.Size = UDim2.new(0, 45, 0, 45)
+    btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+    btn.BackgroundTransparency = 0.7
+    btn.Image = item.Icon
+    btn.ScaleType = Enum.ScaleType.Fit
+    btn.ZIndex = 9998
+    btn.Parent = scroll
+    
+    local padding = Instance.new("UIPadding")
+    padding.PaddingTop = UDim.new(0,8); padding.PaddingBottom = UDim.new(0,8)
+    padding.PaddingLeft = UDim.new(0,8); padding.PaddingRight = UDim.new(0,8)
+    padding.Parent = btn
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,8)
+    corner.Parent = btn
+
+    local label = Instance.new("TextLabel")
+    label.Name = "TextName"
+    label.Visible = false
+    label.Text = item.Text
+    label.Parent = btn
+
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35,35,35)}):Play()
+    end)
+
+    btn.MouseButton1Click:Connect(function()
+        local playerGui = Player:WaitForChild("PlayerGui")
+        local ui = playerGui:FindFirstChild(item.Text.."UI")
+
+        for _, v in pairs(playerGui:GetChildren()) do
+            if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
+                v.Enabled = false
+            end
+        end
+
+        if ui then ui.Enabled = not ui.Enabled end
+        toggleMenu(false)
+    end)
+end
+
+scroll.CanvasSize = UDim2.new(0, (#menuItems * 55), 0, 0)
