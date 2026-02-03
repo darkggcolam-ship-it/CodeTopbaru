@@ -1,0 +1,214 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Player = Players.LocalPlayer
+
+--// ScreenGui Setup
+local ScriptUI = Instance.new("ScreenGui")
+ScriptUI.Name = "ScriptUI"
+ScriptUI.DisplayOrder = 9999
+ScriptUI.ResetOnSpawn = false
+ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+ScriptUI.IgnoreGuiInset = true
+ScriptUI.Enabled = false
+ScriptUI.Parent = Player:WaitForChild("PlayerGui")
+
+--// Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 420, 0, 280)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.2
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = ScriptUI
+mainFrame.ClipsDescendants = true
+mainFrame.Active = true
+mainFrame.Draggable = false
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
+
+--// Close Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextScaled = true
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Size = UDim2.new(0, 25, 0, 25) 
+closeBtn.Position = UDim2.new(1, -30, 0, 5)
+closeBtn.ZIndex = 5
+closeBtn.Parent = mainFrame
+
+closeBtn.MouseButton1Click:Connect(function()
+    ScriptUI.Enabled = false
+end)
+
+--// Refresh Button
+local refreshBtn = Instance.new("ImageButton")
+refreshBtn.Image = "rbxassetid://86084882582277" 
+refreshBtn.BackgroundTransparency = 1
+refreshBtn.Size = UDim2.new(0, 25, 0, 25)
+refreshBtn.Position = UDim2.new(1, -48, 0, 18) 
+refreshBtn.AnchorPoint = Vector2.new(0.5, 0.5) 
+refreshBtn.ZIndex = 5
+refreshBtn.Parent = mainFrame
+
+-- Setup Tween Rotasi
+local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1) -- -1 artinya loop infinity
+local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = -360})
+
+refreshBtn.MouseButton1Click:Connect(function()
+    rotateTween:Play()
+    task.wait(0.5)
+    
+    if Player.PlayerGui:FindFirstChild("ScriptUI") then
+        Player.PlayerGui.ScriptUI:Destroy()
+    end
+    -- Load ulang script
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/FITUR%20REFRESH%20SCRIPTUI"))()
+end)
+
+--// Search Box
+local searchBox = Instance.new("TextBox")
+searchBox.PlaceholderText = "Search..."
+searchBox.Text = ""
+searchBox.Size = UDim2.new(0, 180, 0, 28)
+searchBox.Position = UDim2.new(0.5, 0, 0, 12) 
+searchBox.AnchorPoint = Vector2.new(0.5, 0)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 14
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+searchBox.BorderSizePixel = 0
+searchBox.Parent = mainFrame
+
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 6)
+searchCorner.Parent = searchBox
+
+--// ScrollingFrame
+local listFrame = Instance.new("ScrollingFrame")
+listFrame.Size = UDim2.new(1, -14, 1, -55) 
+listFrame.Position = UDim2.new(0, 7, 0, 50)
+listFrame.BackgroundTransparency = 1
+listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+listFrame.ScrollBarThickness = 4
+listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+listFrame.Parent = mainFrame
+
+local uiGrid = Instance.new("UIGridLayout")
+uiGrid.CellSize = UDim2.new(0, 125, 0, 110) 
+uiGrid.CellPadding = UDim2.new(0, 8, 0, 8)
+uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
+uiGrid.FillDirection = Enum.FillDirection.Horizontal
+uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+uiGrid.Parent = listFrame
+
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingTop = UDim.new(0, 5)
+uiPadding.PaddingBottom = UDim.new(0, 5)
+uiPadding.Parent = listFrame
+
+--// Example Data
+local scripts = {
+    {title = "MeoX Hub - Blox Fruit's (No Key)", image = "rbxassetid://107306321209913", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VanHoangIOS/MeoXHub/refs/heads/main/Main.lua'))()"},
+    {title = "Matsune Auto Bounty - Blox Fruit's (Open Source Edit)", image = "rbxassetid://112113882697708", text = "loadstring(game:HttpGet('https://pastefy.app/IkS0Jjh7/raw'))()"},
+    {title = "Zeus Hub – Blox Fruits Script (No Key)", image = "rbxassetid://102731130900220", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Jadelly/bloxfruit/refs/heads/main/Zeusscript', true))()"},
+    {title = "Leaf Hub - Blox Fruit Script", image = "rbxassetid://99306903212172", text = "loadstring(game:HttpGet('https://pastebin.com/raw/1zwVmBCn'))()"},
+    {title = "The Forge Script – Catraz Hub", image = "rbxassetid://128465030736317", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/nurvian/Catraz-HUB/refs/heads/main/Catraz/main.lua'))()"},
+    {title = "Night Hub (BETA) – Blox Fruits Script (No Key)", image = "rbxassetid://103704059312696", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/BF-Beta.lua'))()"},
+    {title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://125780994628939", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
+    {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://131232348918748", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
+    {title = "Teddy Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://96340556288683", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
+    {title = "Blue X Hub – Blox Fruits Script (No Key)", image = "rbxassetid://130138407109522", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua'))()"},
+    {title = "Script 99 Night In The Forest (NO KEY)", image = "rbxassetid://114848323624473", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Devvzn/DevWare/refs/heads/main/DevMain'))()"},
+    {title = "Mscuaz | Universal Animation", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gwnrdt/gwnrdt/refs/heads/main/Animation.lua'))()"},
+    {title = "Script FE Brookhaven RP SkyBox", image = "rbxassetid://119474295606519", text = "loadstring(game:HttpGet('https://rawscripts.net/raw/Brookhaven-RP-Skybox-Brookhaven-61921'))()"},
+    {title = "nazuro.xyz - 99 Night In The Forest", image = "rbxassetid://114848323624473", text = "loadstring(game:HttpGet('https://nazuro.xyz/99nights'))()"},
+    {title = "Deep Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/Deep', true))()"},
+    {title = "Prison Berry Escape (Free Tools All)", image = "rbxassetid://137811803862209", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VylikGylik/Script/refs/heads/main/Barry%20Prison%20Escape'))()"},
+    {title = "Auto Bounty KiddoHiru - Blox Fruit's", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastebin.com/raw/keGmE2QK'))()"},
+    {title = "Sol Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/SolHub', true))()"},
+    {title = "Vinz Hub - Fish It (Fast Auto Fish)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It'))()"},
+    {title = "The Sus Script 🤓", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://pastefy.app/aVWy3E4k/raw'))()"},
+    {title = "Stree Hub - Fish It (Instant Fish)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
+    {title = "Vora Hub - Fish It (Instant Fish)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/b5652e722eb30b13'))()"},
+    {title = "Mirage Hub - Hunty Zombies", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://pastefy.app/ULaWpxKm/raw'))()"},
+    {title = "Copy Avatar FE", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
+    {title = "HoHo Hub v4", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()"},
+    {title = "OK HUB – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
+    {title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
+    {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
+    {title = "BLOX FRUITS Script No Key AUTO FARM", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
+}
+
+--// Function to Create Card
+local function createScriptCard(data)
+    local card = Instance.new("Frame")
+    card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    card.BackgroundTransparency = 0.2
+    card.Size = UDim2.new(0, 125, 0, 110)
+    card.Parent = listFrame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = card
+
+    local img = Instance.new("ImageLabel")
+    img.Image = data.image
+    img.Size = UDim2.new(1, -10, 0, 60)
+    img.Position = UDim2.new(0, 5, 0, 5)
+    img.BackgroundTransparency = 1
+    img.Parent = card
+
+    local title = Instance.new("TextLabel")
+    title.Text = data.title
+    title.Font = Enum.Font.GothamBold
+    title.TextScaled = true
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(1, -10, 0, 20)
+    title.Position = UDim2.new(0, 5, 0, 68)
+    title.Parent = card
+
+    local copyBtn = Instance.new("TextButton")
+    copyBtn.Text = "Copy"
+    copyBtn.Font = Enum.Font.Gotham
+    copyBtn.TextSize = 11
+    copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    copyBtn.Size = UDim2.new(0.9, 0, 0, 18)
+    copyBtn.Position = UDim2.new(0.05, 0, 1, -22)
+    copyBtn.Parent = card
+
+    local copyCorner = Instance.new("UICorner")
+    copyCorner.CornerRadius = UDim.new(0, 4)
+    copyCorner.Parent = copyBtn
+
+    copyBtn.MouseButton1Click:Connect(function()
+        setclipboard(data.text)
+    end)
+end
+
+--// Generate Cards
+for _, scriptData in ipairs(scripts) do
+    createScriptCard(scriptData)
+end
+
+--// Search Filter
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    local search = string.lower(searchBox.Text)
+    for _, card in ipairs(listFrame:GetChildren()) do
+        if card:IsA("Frame") then
+            local title = card:FindFirstChildOfClass("TextLabel")
+            if title and string.find(string.lower(title.Text), search) then
+                card.Visible = true
+            else
+                card.Visible = false
+            end
+        end
+    end
+end)
