@@ -113,7 +113,8 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
- }
+    {title = "ur here title", image = "rbxassetid://132145333101371", text = "loadstring(game:HttpGet('ur here script'))()"},
+}
 
 --// Function to Create Card
 local function createScriptCard(data)
