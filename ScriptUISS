@@ -67,8 +67,7 @@ refreshBtn.MouseButton1Click:Connect(function()
         Player.PlayerGui.ScriptUI:Destroy()
     end
     -- Load ulang script
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/FITUR%20REFRESH%20SCRIPTUI"))()
-end)
+    end)
 
 --// Search Box
 local searchBox = Instance.new("TextBox")
@@ -114,8 +113,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "Escape Tsunami For Brainrots's (No Key)", image = "rbxassetid://132145333101371", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VanHoangIOS/MeoXHub/refs/heads/main/Main.lua'))()"},
-}
+ }
 
 --// Function to Create Card
 local function createScriptCard(data)
